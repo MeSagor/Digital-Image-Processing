@@ -21,7 +21,6 @@ def intensity_resolution(image, bits):
     desired_levels = 2**bits
     normalized_image = image.astype(float)/256.0
     sampled_image = np.uint8(np.floor(normalized_image*(desired_levels)))
-
     return sampled_image
 
 
@@ -45,8 +44,8 @@ fig, ax = plt.subplots(row, col, figsize=(9, 7))
 idx = 0
 for i in range(row):
     for j in range(col):
-        ax[i, j].imshow(sampled_image_array[idx], cmap='gray')
-        ax[i, j].set_title(f'{8 - idx} bits')
+        ax[i, j].imshow(sampled_image_array[idx], cmap='gray', vmin=0, vmax=(2**(8-idx)-1))
+        ax[i, j].set_title(f'{8-idx} bits')
         idx += 1
 
 plt.tight_layout()

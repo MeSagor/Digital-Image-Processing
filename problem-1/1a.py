@@ -53,7 +53,7 @@ fig, ax = plt.subplots(row, col, figsize=(9, 7))
 idx = 0
 for i in range(row):
     for j in range(col):
-        ax[i, j].imshow(sampled_image_array[idx], cmap='gray')
+        ax[i, j].imshow(sampled_image_array[idx], cmap='gray', vmin=0, vmax=255)
         h = sampled_image_array[idx].shape[0]
         w = sampled_image_array[idx].shape[1]
         ax[i, j].set_title(f'{h}x{w}')

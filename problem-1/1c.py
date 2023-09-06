@@ -15,6 +15,7 @@ def histogram_generate(image):
 
     return pixel_counts
 
+
 rgb_image = plt.imread('images/lena.jpg')
 gray_image = make_gray_image(rgb_image)
 
@@ -24,18 +25,19 @@ pixel_counts = histogram_generate(gray_image)
 
 threshold = 100
 segmented_image = (gray_image > threshold).astype(np.uint8)*255
+colors = ['blue' if val != 100 else 'red' for val in range(256)]
 # print(segmented_image)
 
 plt.figure(figsize=(8, 7))
-plt.subplot(2,2,1)
-plt.imshow(gray_image, cmap='gray')
+plt.subplot(2, 2, 1)
+plt.imshow(gray_image, cmap='gray', vmin=0, vmax=255)
 plt.title('Original')
-plt.subplot(2,2,2)
-plt.bar(range(256), pixel_counts)
+plt.subplot(2, 2, 2)
+plt.bar(range(256), pixel_counts, color=colors)
 plt.title('Histogram')
-plt.subplot(2,2,(3,4))
-plt.imshow(segmented_image, cmap='gray')
-plt.title(f'binary Threshold:{threshold}')
+plt.subplot(2, 2, (3, 4))
+plt.imshow(segmented_image, cmap='gray', vmin=0, vmax=255)
+plt.title(f'Threshold: {threshold}')
 
 plt.tight_layout()
 plt.show()
