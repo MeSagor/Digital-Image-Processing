@@ -3,7 +3,9 @@ import matplotlib.pyplot as plt
 
 
 def make_gray_image(image):
-    gray_image = np.mean(image, axis=2).astype(np.uint8)
+    gray_image = image
+    if len(image.shape) == 3:
+        gray_image = np.mean(image, axis=2).astype(np.uint8)
     return gray_image
 
 
@@ -44,7 +46,6 @@ for i in range(8):
     #     type = 1
     sampled_image = make_up_down_sampling(sampled_image, 2, type)
     print(f'OK-{i+1}')
-
 
 
 row, col = 2, 4

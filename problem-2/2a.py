@@ -3,7 +3,9 @@ import matplotlib.pyplot as plt
 
 
 def make_gray_image(image):
-    gray_image = np.mean(image, axis=2).astype(np.uint8)
+    gray_image = image
+    if len(image.shape) == 3:
+        gray_image = np.mean(image, axis=2).astype(np.uint8)
     return gray_image
 
 
@@ -27,7 +29,7 @@ def brightness_enhancement(image, min_intencity, max_intencity, enhancement_fact
 rgb_image = plt.imread('images/skull.jpg')
 gray_image = make_gray_image(rgb_image)
 
-low, high, factor = 150, 205, 50
+low, high, factor = 0, 30, 50
 enhanced_image = brightness_enhancement(gray_image, low, high, factor)
 
 

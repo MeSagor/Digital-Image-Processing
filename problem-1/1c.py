@@ -12,7 +12,6 @@ def histogram_generate(image):
     for row in image:
         for pixel_value in row:
             pixel_counts[pixel_value] += 1
-
     return pixel_counts
 
 
