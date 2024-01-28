@@ -1,7 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from skimage import transform
-from mpl_toolkits.mplot3d import Axes3D
 
 def make_gray_image(image):
     gray_image = image
@@ -26,7 +24,7 @@ def custom_gray_image_generator():
 
 def add_gaussian_noise(image, mean=0, std=25):
     noisy_image = image.copy()
-    height, width = image.shape
+    height, width = image.shape 
     noise = np.random.normal(mean, std, (height, width))
     noisy_image = noisy_image + noise
     noisy_image = np.clip(noisy_image, 0, 255)

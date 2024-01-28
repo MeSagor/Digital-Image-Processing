@@ -41,23 +41,27 @@ def average_filter(image, kernel_size):
 
 
 def harmonic_geometric_mean_filter(image, kernel_size):
-    kernel_left = kernel_size//2
-    kernel_right = kernel_left+1
-    height, width = image.shape
+    pad_width = kernel_size // 2
+    fil_image = np.pad(image, pad_width, mode='constant')
+    fil_image2 = np.pad(image, pad_width, mode='constant')
 
-    filtered_image_harmonic = np.zeros_like(image)
-    filtered_image_geometric = np.zeros_like(image)
-    for i in range(kernel_left, height-kernel_left):
-        for j in range(kernel_left, width-kernel_left):
-            neighborhood = image[i-kernel_left: i+kernel_right, j-kernel_left: j+kernel_right]
- 
-            harmonic_value = np.mean(1 / neighborhood)
-            geometric_value = np.exp(np.mean(np.log(neighborhood)))
-            
-            filtered_image_harmonic[i, j] = harmonic_value
-            filtered_image_geometric[i, j] = geometric_value
+    for i in range(pad_width, fil_image.shape[0] - pad_width):
+        print(f"Row Processing[median]: {i}", end="\r", flush=True)
+        for j in range(pad_width, fil_image.shape[1] - pad_width):
+            neighborhood = fil_image[i-pad_width : i+pad_width+1, j-pad_width : j+pad_width+1]
+            neighborhood2 = fil_image2[i-pad_width : i+pad_width+1, j-pad_width : j+pad_width+1]
 
-    return filtered_image_harmonic, filtered_image_geometric
+            neighborhood = neighborhood[neighborhood != 0]
+            harmonic_value = neighborhood.size/np.sum(1/neighborhood)
+
+            neighborhood2 = neighborhood2[neighborhood2>0]
+            prod = np.prod(neighborhood2)
+            geo = prod ** (1/ neighborhood2.size)
+
+            fil_image[i, j] = harmonic_value
+            fil_image2[i, j] = geo
+    return fil_image[pad_width: -pad_width, pad_width:-pad_width], fil_image2[pad_width: -pad_width, pad_width:-pad_width]
+
 
 
 
@@ -76,7 +80,7 @@ gray_image = make_gray_image(rgb_image)
 noisy_image = make_salt_pepper_noise(gray_image)
 
 kernel_size = 3
-# filtered_image_harmonic, filtered_image_geometric = harmonic_geometric_mean_filter(noisy_image, kernel_size)
+filtered_image_harmonic, filtered_image_geometric = harmonic_geometric_mean_filter(noisy_image, kernel_size)
 
 abc = peak_signal_noise_ratio(gray_image, noisy_image)
 print(abc)
@@ -85,8 +89,8 @@ print(noisy_image)
 noisy_image_psnr = calculate_psnr(gray_image, noisy_image)
 print(gray_image)
 print(noisy_image)
-# harmonic_filter_psnr = calculate_psnr(gray_image, filtered_image_harmonic)
-# geometric_filter_psnr = calculate_psnr(gray_image, filtered_image_geometric)
+harmonic_filter_psnr = calculate_psnr(gray_image, filtered_image_harmonic)
+geometric_filter_psnr = calculate_psnr(gray_image, filtered_image_geometric)
 
 plt.figure(figsize=(9, 7))
 plt.subplot(221)
@@ -96,12 +100,12 @@ plt.subplot(222)
 plt.imshow(noisy_image, cmap='gray', vmin=0, vmax=255)
 plt.title('Noisy image')
 plt.title(f'Noisy image - PSNR: {noisy_image_psnr:.2f} dB')
-# plt.subplot(223)
-# plt.imshow(filtered_image_harmonic, cmap='gray', vmin=0, vmax=255)
-# plt.title(f'Filtered (harmonic) PSNR: {harmonic_filter_psnr:.2f} dB')
-# plt.subplot(224)
-# plt.imshow(filtered_image_geometric, cmap='gray', vmin=0, vmax=255)
-# plt.title(f'Filtered (geometric) PSNR: {geometric_filter_psnr:.2f} dB')
+plt.subplot(223)
+plt.imshow(filtered_image_harmonic, cmap='gray', vmin=0, vmax=255)
+plt.title(f'Filtered (harmonic) PSNR: {harmonic_filter_psnr:.2f} dB')
+plt.subplot(224)
+plt.imshow(filtered_image_geometric, cmap='gray', vmin=0, vmax=255)
+plt.title(f'Filtered (geometric) PSNR: {geometric_filter_psnr:.2f} dB')
 
 plt.tight_layout()
 plt.show()

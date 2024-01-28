@@ -73,7 +73,7 @@ def calculate_psnr(original_image, noisy_image):
     return psnr
 
 
-rgb_image = plt.imread('images/moon.jpg')
+rgb_image = plt.imread('images/lena.jpg')
 gray_image = make_gray_image(rgb_image)
 noisy_image = make_salt_pepper_noise(gray_image)
 
